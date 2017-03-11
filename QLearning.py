@@ -82,8 +82,8 @@ class QLearning():
             print "R:",self.R
             print "Q:",self.Q
             print "actions",self.actions
-            self.R[self.stateB][self.stateC] = 1000
-            self.R[self.stateF][self.stateC] = 1000
+            self.R[self.stateB][self.stateC] = 100
+            self.R[self.stateF][self.stateC] = 100
 
     def LoadFromMap(self,mapa):
         self.my_map = mapa
@@ -174,6 +174,7 @@ class QLearning():
                 inf_loop_count += 1
                 
                 #print state
+				#get the available actions from the current state
                 actionsFromState = self.GetActionsFrom(state,path)
 
                 #print "actions from state:",actionsFromState
@@ -196,17 +197,9 @@ class QLearning():
                 maxQ = self.maxQ(nextState)
                 r = self.getR(state,action)
 
-                value = q + self.alpha * (r + self.gamma * maxQ - q)
+                value = q + self.alpha * (r + (self.gamma * maxQ) - q)
                 self.setQ(state,action,value)
                 state = nextState
-
-                if nextState == self.finish:
-                    pass
-                else:
-                    self.my_map.map[state[0]][state[1]] = str(inf_loop_count%10)
-                #self.my_map.printMap()
-                path.append(state)
-
             if not exiting:
                 pass
                 #self.my_map.printMap()
@@ -293,8 +286,15 @@ class QLearning():
             if self.final_policy[state] in path:
                 #self.my_map.printMap()
                 string = str(state) + ", " + str(path) + "\nrecalculating state to: "
-                state = self.policy(state, path)
-                string += str(state)
+                actionsFromState = self.GetActionsFrom(state,path)
+				
+                if(len(actionsFromState)!=0):
+					#print len(actionsFromState)
+					state = random.choice(actionsFromState)
+                else:
+					state = self.final_policy[state]
+                #state = self.policy(state, path)
+                #string += str(state)
                 #print string
                 #print
             else:
