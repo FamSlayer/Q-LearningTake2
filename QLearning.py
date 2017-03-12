@@ -162,9 +162,15 @@ class QLearning():
         for i in range(itr_count):
             #print
             #print "iteration",i
-            state = self.start
+			#state = self.start
             
             self.LoadFromMap(Map.Map(self.mapa, True))
+            while True:
+				rand_row = random.randint(0,9)
+				rand_col = random.randint(0,9)
+				if self.my_map.map[rand_row][rand_col] == '.':
+					state = rand_row, rand_col
+					break
             path = []
             path.append(state)
             
@@ -217,6 +223,19 @@ class QLearning():
                                                     ##        }
         return maxValue                             ##        return maxValue;
         
+	
+    def pickMaxQ(self, s):
+		actionsFromState = self.GetActionsFrom(s)
+		maxValue = float('-inf')  
+		returnState = actionsFromState[0]
+		for i in range(len(actionsFromState)):
+			nextState = actionsFromState[i]
+			value = self.Q[s][nextState]   
+                                                
+			if(value > maxValue):         
+				maxValue = value
+				returnState = nextState
+		return returnState
 
 ##  get policy from state                               ##    // get policy from state
     def policy(self, s, path=None):                     ##    int policy(int state) {
@@ -282,29 +301,95 @@ class QLearning():
 
         while state != self.finish and count < 100:
             count += 1
-            
-            if self.final_policy[state] in path:
-                #self.my_map.printMap()
-                string = str(state) + ", " + str(path) + "\nrecalculating state to: "
-                actionsFromState = self.GetActionsFrom(state,path)
-				
-                if(len(actionsFromState)!=0):
+            #state = self.final_policy[state]
+            i = random.random() * 10
+            prevState = state
+			#if the policy is in the path, choose a random new state from the 
+			#available options
+            #print i
+            """if(i>9) and self.final_policy[state] in path:
+				#print "going rando!"
+				actionsFromState = self.GetActionsFrom(state, path)
+				if(len(actionsFromState)!=0):
 					#print len(actionsFromState)
-					state = random.choice(actionsFromState)
-                else:
-					state = self.final_policy[state]
-                #state = self.policy(state, path)
-                #string += str(state)
-                #print string
-                #print
+					state = self.policy(state, path)
+					j = 0
+					while((state in path)) and j<10:
+						state = random.choice(actionsFromState)
+						j+=1
+					
+					if(state in path):
+						#print "Went back. " + str(count)
+						state = self.pickMaxQ(prevState)
+					
+				else:
+					state = self.policy(prevState, path)
+					
+            elif self.final_policy[state] in path:
+				#print "Action already in path"
+				actionsFromState = self.GetActionsFrom(state, path)
+				if(len(actionsFromState)!=0):
+					#print "Have options. Recalculating"
+					state = self.policy(state, path)
+					j = 0
+					while((state in path)) and j<10:
+						state = random.choice(actionsFromState)
+						j+=1
+					if(state in path):
+						#print "Went back. Had options"
+						state = self.pickMaxQ(prevState)
+				#no unique positions you can move to, choose from all available ones
+				else:
+					#print "Action not in path, proceeding"
+					actionsFromState = self.GetActionsFrom(state)
+					if(len(actionsFromState)!=0):
+						#print "Don't have options. Recalculating"
+						state = self.policy(state, path)
+						j = 0
+						while((state in path)) and j<10:
+							state = random.choice(actionsFromState)
+							j+=1
+						if(state in path):
+							#print "Went back. Didn't have options"
+							state = self.final_policy[prevState]
+					else:
+						state = self.pickMaxQ(prevState)
+			#if the policy isn't in the path, but i is greater than 9, choose a random
+			#policy from the path
             else:
-                state = self.final_policy[state]
-                
+				state = self.final_policy[state]  
+			"""
+            state = self.final_policy[state]
+            if(state in path):
+				actionsFromState = self.GetActionsFrom(prevState, path)
+				#there are valid options
+				if(len(actionsFromState)!=0):
+					j = 0
+					while((state in path)) and j<10:
+						state = random.choice(actionsFromState)
+						j+=1
+				#otherwise, backtrack until there are valid options
+				else:
+					pastOptions = []
+					if(i>9.5):
+						state = self.pickMaxQ(prevState)
+						
+					else:
+						while(len(actionsFromState)==0):
+							prevState = path.pop()
+							pastOptions.append(prevState)
+							actionsFromState = self.GetActionsFrom(prevState, path)
+							
+						state = random.choice(actionsFromState)
+						for item in range(len(pastOptions)):
+							path.append(pastOptions[item])
+					
             path.append(state)
             x,y = state
             if state != self.finish:
                 self.my_map.map[x][y] = str(count%10)
-
+            else:
+				print "Done."
         self.my_map.printMap()
 
         

@@ -76,7 +76,10 @@ def main():
     obj3.followPolicy()
     print "Time: " + str( END3 - BEGIN3 ) + " sec.\n"
     print "Time: " + str( END3 - BEGIN1 ) + " sec.\n"
-
+	
+    raw_input()
+	
+	
     
 
 
@@ -92,4 +95,5 @@ def main():
 
     
 
-main()
+if __name__ == '__main__':
+	main()
