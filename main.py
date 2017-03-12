@@ -77,7 +77,7 @@ def main():
     print "Time: " + str( END3 - BEGIN3 ) + " sec.\n"
     print "Time: " + str( END3 - BEGIN1 ) + " sec.\n"
 	
-    raw_input()
+
 	
 	
     

@@ -209,6 +209,7 @@ class QLearning():
             if not exiting:
                 pass
                 #self.my_map.printMap()
+            self.avgQvalue(i)
 
 ##  get maxQ from state
     def maxQ(self, s):                              ##    double maxQ(int s) {
@@ -262,6 +263,19 @@ class QLearning():
 
     def getR(self, s, a):
         return self.R[s][a]
+	
+	#print the average Q value over all actions
+    def avgQvalue(self, epNum):
+		print "EPISODE NUMBER " + str(epNum)
+		total = 0
+		totalNum = 0
+		for x in range(10):
+			for y in range(10):
+				for k in self.Q[(x,y)].keys():
+					#print self.Q[(x,y)][k]
+					total+= self.Q[(x,y)][k]
+					totalNum+=1
+		print "AVG Q VALUE=> " + str(total/totalNum) + " NUM VALUES => " + str(totalNum)
 
     def printResult(self):
         print "Print result"
