@@ -266,7 +266,7 @@ class QLearning():
 	
 	#print the average Q value over all actions
     def avgQvalue(self, epNum):
-		print "EPISODE NUMBER " + str(epNum)
+		#print "EPISODE NUMBER " + str(epNum)
 		total = 0
 		totalNum = 0
 		for x in range(10):
@@ -275,7 +275,7 @@ class QLearning():
 					#print self.Q[(x,y)][k]
 					total+= self.Q[(x,y)][k]
 					totalNum+=1
-		print "AVG Q VALUE=> " + str(total/totalNum) + " NUM VALUES => " + str(totalNum)
+		#print "AVG Q VALUE=> " + str(total/totalNum) + " NUM VALUES => " + str(totalNum)
 
     def printResult(self):
         print "Print result"
